@@ -1,0 +1,1379 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>С ДР Ира СИКС СЕВЕН67676767213456784657</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Comic+Neue:wght@700&family=Impact&family=Press+Start+2P&family=Rubik+Glitch&family=Russo+One&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --neon-pink: #ff007f;
+      --neon-green: #39ff14;
+      --neon-cyan: #00f0ff;
+      --neon-yellow: #ffff00;
+      --neon-purple: #b000ff;
+      --bg-dark: #0a0518;
+    }
+
+    * {
+      box-sizing: border-box;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    body,
+    html {
+      margin: 0;
+      padding: 0;
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      background-color: var(--bg-dark);
+      font-family: 'Comic Neue', cursive, sans-serif;
+      cursor: crosshair;
+    }
+
+    /* Trippy Background Canvas */
+    #bg-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 0;
+      pointer-events: none;
+    }
+
+    /* Scanline effect */
+    .scanlines {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 999;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.35) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.04));
+      background-size: 100% 4px, 6px 100%;
+    }
+
+    /* Marquee Ribbons */
+    .marquee-container {
+      position: fixed;
+      left: 0;
+      width: 100%;
+      z-index: 900;
+      font-family: 'Russo One', sans-serif;
+      font-size: 15px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 8px 0;
+      overflow: hidden;
+      white-space: nowrap;
+      box-shadow: 0 0 25px rgba(255, 0, 127, 0.7);
+    }
+
+    .marquee-top {
+      top: 0;
+      background: repeating-linear-gradient(45deg, #ffe600, #ffe600 20px, #000 20px, #000 40px);
+      color: #ffff00;
+      text-shadow: 2px 2px #000, -2px -2px #000, 2px -2px #000, -2px 2px #000;
+      border-bottom: 3px solid #ff0055;
+    }
+
+    .marquee-bottom {
+      bottom: 0;
+      background: linear-gradient(90deg, #ff007f, #b000ff, #00f0ff, #39ff14, #ff007f);
+      background-size: 400% 100%;
+      animation: rainbow-shift 6s linear infinite;
+      color: #fff;
+      text-shadow: 0 0 10px #000, 2px 2px #000;
+      border-top: 3px solid #00f0ff;
+    }
+
+    .marquee-content {
+      display: inline-block;
+      white-space: nowrap;
+      animation: scroll-marquee 25s linear infinite;
+    }
+
+    .marquee-content-reverse {
+      display: inline-block;
+      white-space: nowrap;
+      animation: scroll-marquee-reverse 20s linear infinite;
+    }
+
+    @keyframes scroll-marquee {
+      0% {
+        transform: translateX(0%);
+      }
+
+      100% {
+        transform: translateX(-50%);
+      }
+    }
+
+    @keyframes scroll-marquee-reverse {
+      0% {
+        transform: translateX(-50%);
+      }
+
+      100% {
+        transform: translateX(0%);
+      }
+    }
+
+    @keyframes rainbow-shift {
+      0% {
+        background-position: 0% 50%;
+      }
+
+      100% {
+        background-position: 100% 50%;
+      }
+    }
+
+    /* Chaos Stage / Playground */
+    #chaos-stage {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+      overflow: hidden;
+    }
+
+    /* Freak Card */
+    .freak-card {
+      position: absolute;
+      cursor: grab;
+      border-radius: 8px;
+      background: #c0c0c0;
+      box-shadow: 8px 12px 30px rgba(0, 0, 0, 0.7), 0 0 20px var(--neon-pink);
+      border: 3px solid #fff;
+      border-right-color: #404040;
+      border-bottom-color: #404040;
+      transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275), box-shadow 0.2s ease;
+      touch-action: none;
+      will-change: transform, left, top;
+    }
+
+    .freak-card.dragging {
+      cursor: grabbing;
+      box-shadow: 15px 25px 50px rgba(0, 0, 0, 0.9), 0 0 35px var(--neon-green) !important;
+      transition: none !important;
+      z-index: 10000 !important;
+    }
+
+    .freak-card:hover {
+      box-shadow: 12px 18px 40px rgba(0, 0, 0, 0.8), 0 0 35px var(--neon-cyan);
+    }
+
+    /* Windows 98 / XP retro titlebar */
+    .card-titlebar {
+      background: linear-gradient(90deg, #000080, #1084d0);
+      color: white;
+      padding: 4px 6px;
+      font-size: 11px;
+      font-family: 'Press Start 2P', monospace;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      line-height: 1;
+      border-bottom: 2px solid #808080;
+    }
+
+    .card-titlebar.pink {
+      background: linear-gradient(90deg, #ff007f, #8b008b);
+    }
+
+    .card-titlebar.green {
+      background: linear-gradient(90deg, #00802b, #00ff66);
+      color: #000;
+    }
+
+    .card-titlebar.flame {
+      background: linear-gradient(90deg, #ff3300, #ff9900);
+    }
+
+    .titlebar-text {
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      max-width: 170px;
+    }
+
+    .window-controls {
+      display: flex;
+      gap: 3px;
+    }
+
+    .win-btn {
+      width: 14px;
+      height: 13px;
+      background: #c0c0c0;
+      border: 1px solid #ffffff;
+      border-right-color: #000000;
+      border-bottom-color: #000000;
+      font-size: 9px;
+      font-weight: bold;
+      color: #000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .win-btn:active {
+      border-color: #000 #fff #fff #000;
+    }
+
+    .card-body {
+      padding: 6px;
+      background: #dfdfdf;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
+    /* Media inside card */
+    .card-media {
+      display: block;
+      width: 100%;
+      height: auto;
+      object-fit: cover;
+      border: 2px solid #404040;
+      border-bottom-color: #fff;
+      border-right-color: #fff;
+      pointer-events: none;
+      background: #000;
+    }
+
+    /* Scotch Tape */
+    .scotch-tape {
+      position: absolute;
+      width: 60px;
+      height: 22px;
+      background: rgba(255, 255, 230, 0.65);
+      border: 1px dashed rgba(255, 255, 100, 0.4);
+      top: -12px;
+      left: 50%;
+      transform: translateX(-50%) rotate(-4deg);
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+      pointer-events: none;
+      z-index: 10;
+    }
+
+    /* Sticker Badges */
+    .sticker-badge {
+      position: absolute;
+      bottom: -12px;
+      right: -12px;
+      background: var(--neon-yellow);
+      color: #000;
+      font-family: 'Impact', sans-serif;
+      font-size: 13px;
+      letter-spacing: 1px;
+      padding: 3px 8px;
+      border: 2px solid #000;
+      border-radius: 4px;
+      box-shadow: 3px 3px 0 #000;
+      transform: rotate(12deg);
+      z-index: 15;
+      text-transform: uppercase;
+      animation: pulse-badge 1.5s infinite alternate;
+    }
+
+    @keyframes pulse-badge {
+      0% {
+        transform: rotate(12deg) scale(1);
+      }
+
+      100% {
+        transform: rotate(16deg) scale(1.15);
+      }
+    }
+
+    .freak-caption {
+      margin-top: 5px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #000;
+      background: #fff;
+      width: 100%;
+      padding: 3px 5px;
+      text-align: center;
+      border: 1px solid #777;
+      font-family: 'Comic Neue', cursive;
+    }
+
+    /* Floating Ambient Motion */
+    @keyframes float-freak-1 {
+
+      0%,
+      100% {
+        transform: translate(0, 0) rotate(var(--rot));
+      }
+
+      50% {
+        transform: translate(6px, -14px) rotate(calc(var(--rot) + 4deg));
+      }
+    }
+
+    @keyframes float-freak-2 {
+
+      0%,
+      100% {
+        transform: translate(0, 0) rotate(var(--rot));
+      }
+
+      50% {
+        transform: translate(-8px, 12px) rotate(calc(var(--rot) - 5deg));
+      }
+    }
+
+    .animate-float-1 {
+      animation: float-freak-1 4.5s ease-in-out infinite;
+    }
+
+    .animate-float-2 {
+      animation: float-freak-2 5.5s ease-in-out infinite;
+    }
+
+    /* Turbo Spin Mode */
+    .turbo-spin {
+      animation: spin-freak 0.5s linear infinite !important;
+    }
+
+    @keyframes spin-freak {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* Floating Center Birthday Freak Hero */
+    #hero-banner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 50;
+      text-align: center;
+      pointer-events: none;
+      filter: drop-shadow(0 0 30px #ff007f);
+    }
+
+    .hero-title {
+      font-family: 'Rubik Glitch', cursive, sans-serif;
+      font-size: clamp(38px, 7vw, 90px);
+      color: #fff;
+      text-transform: uppercase;
+      line-height: 0.95;
+      margin: 0;
+      text-shadow: 4px 4px 0 #ff007f, -4px -4px 0 #00f0ff, 6px -6px 0 #ffff00;
+      animation: title-wobble 0.25s infinite alternate;
+    }
+
+    .hero-subtitle {
+      font-family: 'Press Start 2P', monospace;
+      font-size: clamp(12px, 2vw, 22px);
+      color: var(--neon-green);
+      background: rgba(0, 0, 0, 0.85);
+      border: 2px dashed var(--neon-green);
+      padding: 8px 18px;
+      margin-top: 15px;
+      display: inline-block;
+      letter-spacing: 2px;
+      box-shadow: 0 0 20px var(--neon-green);
+    }
+
+    @keyframes title-wobble {
+      0% {
+        transform: skew(-3deg, -1deg) scale(1);
+      }
+
+      100% {
+        transform: skew(3deg, 1deg) scale(1.03);
+      }
+    }
+
+    /* Controls Panel */
+    #control-panel {
+      position: fixed;
+      bottom: 45px;
+      left: 50%;
+      transform: translateX(-50%);
+      z-index: 800;
+      background: rgba(10, 10, 20, 0.92);
+      border: 3px solid var(--neon-pink);
+      box-shadow: 0 0 30px rgba(255, 0, 127, 0.8), inset 0 0 15px rgba(0, 240, 255, 0.5);
+      border-radius: 50px;
+      padding: 8px 18px;
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      backdrop-filter: blur(8px);
+    }
+
+    .freak-btn {
+      background: linear-gradient(135deg, #ff007f, #b000ff);
+      color: #fff;
+      font-family: 'Russo One', sans-serif;
+      font-size: 13px;
+      border: 2px solid #fff;
+      padding: 8px 14px;
+      border-radius: 25px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      text-transform: uppercase;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.5);
+      transition: all 0.15s ease;
+      white-space: nowrap;
+    }
+
+    .freak-btn:hover {
+      transform: translateY(-3px) scale(1.08);
+      box-shadow: 0 6px 20px var(--neon-cyan);
+      border-color: var(--neon-green);
+      background: linear-gradient(135deg, #00f0ff, #39ff14);
+      color: #000;
+    }
+
+    .freak-btn:active {
+      transform: translateY(1px) scale(0.96);
+    }
+
+    .freak-btn.active {
+      background: var(--neon-green);
+      color: #000;
+      border-color: #ffff00;
+      box-shadow: 0 0 20px var(--neon-green);
+    }
+
+    /* Sound Status Badge */
+    #sound-badge {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      color: var(--neon-cyan);
+    }
+
+    /* Spawned Particles / Confetti / Floating Memes */
+    .particle {
+      position: fixed;
+      pointer-events: none;
+      z-index: 9999;
+      font-size: 24px;
+      animation: fall-fade 2s forwards ease-out;
+    }
+
+    @keyframes fall-fade {
+      0% {
+        opacity: 1;
+        transform: translate(0, 0) rotate(0deg) scale(1.5);
+      }
+
+      100% {
+        opacity: 0;
+        transform: translate(var(--tx), var(--ty)) rotate(var(--trot)) scale(0.5);
+      }
+    }
+
+    /* Floating Click Text ("С ДР!", "BAZA", "FREAK!") */
+    .pop-text {
+      position: fixed;
+      pointer-events: none;
+      z-index: 10001;
+      font-family: 'Rubik Glitch', Impact, sans-serif;
+      font-size: 32px;
+      color: var(--neon-yellow);
+      text-shadow: 3px 3px 0 #ff007f, -3px -3px 0 #000;
+      animation: pop-up 1.2s forwards cubic-bezier(0.18, 0.89, 0.32, 1.28);
+    }
+
+    @keyframes pop-up {
+      0% {
+        opacity: 1;
+        transform: scale(0.4) rotate(var(--rot, 0deg));
+      }
+
+      60% {
+        opacity: 1;
+        transform: scale(1.3) translateY(-40px) rotate(var(--rot, 0deg));
+      }
+
+      100% {
+        opacity: 0;
+        transform: scale(1.5) translateY(-80px) rotate(calc(var(--rot, 0deg) + 20deg));
+      }
+    }
+
+    /* Screen Shake */
+    .screen-shake {
+      animation: shake 0.35s infinite;
+    }
+
+    @keyframes shake {
+      0% {
+        transform: translate(2px, 3px) rotate(0deg);
+      }
+
+      20% {
+        transform: translate(-3px, -2px) rotate(1deg);
+      }
+
+      40% {
+        transform: translate(-2px, 2px) rotate(-1deg);
+      }
+
+      60% {
+        transform: translate(3px, 1px) rotate(0deg);
+      }
+
+      80% {
+        transform: translate(1px, -2px) rotate(1deg);
+      }
+
+      100% {
+        transform: translate(0, 0) rotate(0deg);
+      }
+    }
+
+    /* Mouse cursor follower */
+    #cursor-follower {
+      position: fixed;
+      pointer-events: none;
+      z-index: 10002;
+      width: 20px;
+      height: 20px;
+      border: 2px solid var(--neon-pink);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      transition: width 0.2s, height 0.2s, border-color 0.2s;
+      box-shadow: 0 0 10px var(--neon-pink);
+    }
+
+    /* Modal Zoom View */
+    #freak-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: rgba(0, 0, 0, 0.88);
+      z-index: 20000;
+      display: none;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      backdrop-filter: blur(10px);
+    }
+
+    #freak-modal.open {
+      display: flex;
+    }
+
+    #modal-content-container {
+      max-width: 85vw;
+      max-height: 80vh;
+      border: 5px solid var(--neon-green);
+      box-shadow: 0 0 50px var(--neon-pink), 0 0 100px var(--neon-cyan);
+      background: #000;
+      position: relative;
+    }
+
+    #modal-content-container img,
+    #modal-content-container video {
+      display: block;
+      max-width: 85vw;
+      max-height: 75vh;
+      object-fit: contain;
+    }
+
+    .modal-close-btn {
+      position: absolute;
+      top: -20px;
+      right: -20px;
+      width: 44px;
+      height: 44px;
+      background: #ff0055;
+      color: #fff;
+      font-size: 24px;
+      font-weight: bold;
+      border-radius: 50%;
+      border: 3px solid #fff;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 0 20px #ff0055;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      #control-panel {
+        flex-wrap: wrap;
+        border-radius: 20px;
+        padding: 6px 12px;
+        gap: 6px;
+        bottom: 40px;
+        width: 95%;
+        justify-content: center;
+      }
+
+      .freak-btn {
+        font-size: 11px;
+        padding: 6px 10px;
+      }
+    }
+
+    .freak-btn.pulse-btn {
+      animation: freak-pulse-btn 0.7s infinite alternate !important;
+      border-color: var(--neon-yellow) !important;
+      background: linear-gradient(135deg, #00f0ff, #39ff14) !important;
+      color: #000 !important;
+    }
+
+    @keyframes freak-pulse-btn {
+      0% {
+        transform: scale(1);
+        box-shadow: 0 0 12px var(--neon-cyan);
+      }
+
+      100% {
+        transform: scale(1.08);
+        box-shadow: 0 0 28px var(--neon-green);
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- Custom User Audio Track -->
+  <audio id="bg-audio" src="7mvi8pyj2eif7u7zzm4j.mp3" autoplay loop preload="auto"></audio>
+
+  <!-- Retro Canvas Background -->
+  <canvas id="bg-canvas"></canvas>
+  <div class="scanlines"></div>
+  <div id="cursor-follower"></div>
+
+  <!-- Top Warning Marquee -->
+  <div class="marquee-container marquee-top">
+    <div class="marquee-content">
+      🚨 Я ГИТЛЕР Я ВЕРНУЛСЯ 🚨 С ДНЁМ РОЖДЕНИЯ ИРА 💅 🚨 100% FREAK FOR FREAK CERTIFIED 🚨 АРЛЕКИНО
+      В ЗДАНИИ 🚨 КИМ ЧЕН ЫН УВАЖАЕТ 🚨 СИКС СЕВЕН 🚨 НЕГРЫ ВСЕ ПИДАРАСЫ 🚨
+    </div>
+    <div class="marquee-content">
+      🚨 Я ГИТЛЕР Я ВЕРНУЛСЯ 🚨 С ДНЁМ РОЖДЕНИЯ ИРА 💅 🚨 100% FREAK FOR FREAK CERTIFIED 🚨 АРЛЕКИНО
+      В ЗДАНИИ 🚨 КИМ ЧЕН ЫН УВАЖАЕТ 🚨 СИКС СЕВЕН 🚨 НЕГРЫ ВСЕ ПИДАРАСЫ 🚨
+    </div>
+  </div>
+
+  <!-- Bottom Marquee -->
+  <div class="marquee-container marquee-bottom">
+    <div class="marquee-content-reverse">
+      ААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААААА
+    </div>
+    <div class="marquee-content-reverse">
+      ДЕД СДОХ ДЕЕЕЕЕЕЕЕеееееееееееееееееееееееееееееЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕЕД
+    </div>
+  </div>
+
+  <!-- Center Floating Birthday Freak Hero -->
+  <div id="hero-banner">
+    <h1 class="hero-title">С ДР ИРА</h1>
+    <div class="hero-subtitle">ДЕТИ СЬЕБАЛИСЬ</div>
+  </div>
+
+  <!-- Main Chaos Stage with Scattered Draggable Items -->
+  <div id="chaos-stage"></div>
+
+  <!-- Freak Control Panel -->
+  <div id="control-panel">
+    <button class="freak-btn" id="btn-shuffle" title="Перемешать всё заново!">
+      🎲 ПЕРЕМЕШАТЬ ХАОС
+    </button>
+    <button class="freak-btn" id="btn-turbo" title="Режим бешеного вращения!">
+      🌪️ ТУРБО-ФРИК
+    </button>
+    <button class="freak-btn" id="btn-explode" title="Салют и конфетти!">
+      💥 ВЗРЫВ
+    </button>
+    <button class="freak-btn active" id="btn-audio" title="Включить / выключить трек!">
+      🎵 ТРЕК: <span id="sound-badge">ВКЛ 🔥</span>
+    </button>
+    <button class="freak-btn" id="btn-duplicate" title="Спавнить еще карточек!">
+      🤡 +1
+    </button>
+  </div>
+
+  <!-- Modal Zoom -->
+  <div id="freak-modal">
+    <div id="modal-content-container">
+      <button class="modal-close-btn" id="modal-close">&times;</button>
+      <div id="modal-body"></div>
+    </div>
+  </div>
+
+  <script>
+    // --- LIST OF MEDIA FILES ---
+    const mediaItems = [
+      // Images
+      { type: 'image', src: 'photo_2026-10-01_23-36-33.jpg', title: 'supreme_leader.exe', caption: 'тебе какую могилку?', badge: 'ХАХАХАХАХ', style: 'pink' },
+      { type: 'image', src: 'Снимок экрана 2026-10-01 232532.png', title: 'shhh_arlecchino.png', caption: 'АХМЭД ПОЗДРИВЛЯЭТ', badge: 'ГИГАБУБЫ', style: 'default' },
+      { type: 'image', src: 'Снимок экрана 2026-10-01 232633.png', title: 'rodina_moment.png', caption: 'ПРИЕХАЛА НА РОДИНУ в ЧЕРНОБЛЬ', badge: 'БАЗА', style: 'flame' },
+      { type: 'image', src: 'Снимок экрана 2026-10-01 233012.png', title: 'bald_father.png', caption: 'КОГДА ПЕНСИЯ?', badge: 'ЛЫСЫЙ', style: 'green' },
+
+      // Videos (looping like animated GIFs)
+      { type: 'video', src: 'animation.gif.mp4', title: 'hyper_animation.gif', caption: 'ВЫПУСТИ ДЕТЕЙ ИЗ ПОДВАЛА⚡', badge: 'HYPER', style: 'pink' },
+      { type: 'video', src: 'doc_2026-10-01_23-28-55.mp4', title: 'freak_doc_1.mp4', caption: 'ДА ЗА ШГОООООООООООООООООООО', badge: 'АВАВАО', style: 'default' },
+      { type: 'video', src: 'doc_2026-10-01_23-29-38.mp4', title: 'freak_doc_2.mp4', caption: 'НЕВИСРЕТ ТЯ ЖДЕТ', badge: 'FREAK', style: 'green' },
+      { type: 'video', src: 'doc_2026-10-01_23-31-38.mp4', title: 'freak_doc_3.mp4', caption: 'СТАРАЯ УЖЕ', badge: 'TOP NIGGA', style: 'flame' },
+      { type: 'video', src: 'doc_2026-10-01_23-33-48.mp4', title: 'freak_doc_4.mp4', caption: 'ОТДАЙ  АРЛЕ', badge: '10/нулина ебаная', style: 'pink' },
+      { type: 'video', src: 'doc_2026-10-01_23-38-41.mp4', title: 'freak_doc_5.mp4', caption: 'ргокпшгамповат', badge: 'LEGEND', style: 'default' },
+      { type: 'video', src: 'doc_2026-10-01_23-39-55.mp4', title: 'freak_doc_6.mp4', caption: 'ОРАОАОАОАООА', badge: 'ЧЕ НАХУЙ', style: 'green' },
+      { type: 'video', src: 'honkai-star-rail-hsr.mp4', title: 'hsr_rot.mp4', caption: 'Крутки сами себя не выбьют иди работай', badge: 'ДАЙ ГИФОК', style: 'flame' }
+    ];
+
+    const chaosStage = document.getElementById('chaos-stage');
+    let highestZIndex = 100;
+    let turboMode = false;
+
+    // --- BACKGROUND MUSIC & AUDIO ---
+    let audioCtx = null;
+    const bgAudio = document.getElementById('bg-audio');
+    if (bgAudio) {
+      bgAudio.volume = 0.9;
+    }
+    let isMusicPlaying = true; // Enabled by default!
+
+    function getAudioContext() {
+      if (!audioCtx) {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      }
+      if (audioCtx.state === 'suspended') {
+        audioCtx.resume();
+      }
+      return audioCtx;
+    }
+
+    function playSound(type = 'boing') {
+      try {
+        const ctx = getAudioContext();
+        const now = ctx.currentTime;
+        const osc = ctx.createOscillator();
+        const gain = ctx.createGain();
+        osc.connect(gain);
+        gain.connect(ctx.destination);
+
+        if (type === 'boing') {
+          osc.type = 'sine';
+          osc.frequency.setValueAtTime(150, now);
+          osc.frequency.exponentialRampToValueAtTime(650, now + 0.15);
+          gain.gain.setValueAtTime(0.3, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+          osc.start(now);
+          osc.stop(now + 0.3);
+        } else if (type === 'laser') {
+          osc.type = 'sawtooth';
+          osc.frequency.setValueAtTime(900, now);
+          osc.frequency.exponentialRampToValueAtTime(80, now + 0.2);
+          gain.gain.setValueAtTime(0.25, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.2);
+          osc.start(now);
+          osc.stop(now + 0.2);
+        } else if (type === 'airhorn') {
+          // Synthetic mini airhorn burst
+          const freqs = [466.16, 466.16, 466.16, 622.25];
+          freqs.forEach((f, i) => {
+            const o = ctx.createOscillator();
+            const g = ctx.createGain();
+            o.type = 'sawtooth';
+            o.frequency.value = f;
+            o.connect(g);
+            g.connect(ctx.destination);
+            const startTime = now + (i * 0.08);
+            g.gain.setValueAtTime(0.15, startTime);
+            g.gain.exponentialRampToValueAtTime(0.01, startTime + 0.18);
+            o.start(startTime);
+            o.stop(startTime + 0.18);
+          });
+        } else if (type === 'bass') {
+          osc.type = 'triangle';
+          osc.frequency.setValueAtTime(120, now);
+          osc.frequency.exponentialRampToValueAtTime(35, now + 0.4);
+          gain.gain.setValueAtTime(0.5, now);
+          gain.gain.exponentialRampToValueAtTime(0.01, now + 0.45);
+          osc.start(now);
+          osc.stop(now + 0.45);
+        }
+      } catch (e) {
+        console.warn('Audio error:', e);
+      }
+
+      // If user interacted to trigger any sound effect, ensure background music also starts!
+      ensureMusicPlaying();
+    }
+
+    // --- BACKGROUND MUSIC CONTROLLER (7mvi8pyj2eif7u7zzm4j.mp3) ---
+    function updateAudioUI(playing) {
+      const badge = document.getElementById('sound-badge');
+      const btn = document.getElementById('btn-audio');
+      if (!badge || !btn) return;
+      if (playing) {
+        badge.textContent = 'ВКЛ 🔥';
+        btn.classList.add('active');
+        btn.classList.remove('pulse-btn');
+      } else {
+        if (isMusicPlaying) {
+          badge.textContent = 'ЖМИ СЮДА 🔊';
+          btn.classList.remove('active');
+          btn.classList.add('pulse-btn');
+        } else {
+          badge.textContent = 'ВЫКЛ';
+          btn.classList.remove('active');
+          btn.classList.remove('pulse-btn');
+        }
+      }
+    }
+
+    function ensureMusicPlaying() {
+      if (!bgAudio || !isMusicPlaying) return;
+      if (bgAudio.paused) {
+        bgAudio.play().then(() => {
+          updateAudioUI(true);
+        }).catch((err) => {
+          console.log('Audio start attempt deferred:', err);
+        });
+      }
+    }
+
+    function startMusic() {
+      if (!bgAudio) return;
+      bgAudio.volume = 1.0;
+      isMusicPlaying = true;
+
+      const promise = bgAudio.play();
+      if (promise !== undefined) {
+        promise.then(() => {
+          updateAudioUI(true);
+        }).catch(() => {
+          // Deferred by browser until first click/touch
+          updateAudioUI(false);
+        });
+      }
+    }
+
+    function toggleFreakMusic() {
+      if (!bgAudio) return;
+      if (bgAudio.paused) {
+        isMusicPlaying = true;
+        bgAudio.play().then(() => {
+          updateAudioUI(true);
+        }).catch(e => console.warn(e));
+      } else {
+        isMusicPlaying = false;
+        bgAudio.pause();
+        updateAudioUI(false);
+      }
+    }
+
+    // Try starting audio immediately
+    startMusic();
+
+    // Hook into CAPTURING phase of every possible user gesture so ANY click/touch anywhere starts it!
+    document.addEventListener('pointerdown', ensureMusicPlaying, true);
+    document.addEventListener('click', ensureMusicPlaying, true);
+    document.addEventListener('touchstart', ensureMusicPlaying, true);
+    document.addEventListener('keydown', ensureMusicPlaying, true);
+
+    // --- CREATE A FREAK CARD ---
+    function createCard(item, index) {
+      const card = document.createElement('div');
+      card.className = `freak-card animate-float-${(index % 2) + 1}`;
+      card.dataset.index = index;
+
+      // Random card widths between 190px and 290px
+      const cardWidth = Math.floor(Math.random() * 80) + 210;
+      card.style.width = `${cardWidth}px`;
+
+      // Random initial tilt between -26 and +26 degrees
+      const rot = (Math.random() * 52 - 26).toFixed(1);
+      card.style.setProperty('--rot', `${rot}deg`);
+      card.style.transform = `rotate(${rot}deg)`;
+      card.style.zIndex = highestZIndex++;
+
+      // Scotch tape decoration
+      const tape = document.createElement('div');
+      tape.className = 'scotch-tape';
+      card.appendChild(tape);
+
+      // Titlebar
+      const titlebar = document.createElement('div');
+      titlebar.className = `card-titlebar ${item.style || ''}`;
+      titlebar.innerHTML = `
+        <span class="titlebar-text">👾 ${item.title}</span>
+        <div class="window-controls">
+          <span class="win-btn win-min">_</span>
+          <span class="win-btn win-max">□</span>
+          <span class="win-btn win-close">✕</span>
+        </div>
+      `;
+      card.appendChild(titlebar);
+
+      // Body
+      const body = document.createElement('div');
+      body.className = 'card-body';
+
+      if (item.type === 'video') {
+        const vid = document.createElement('video');
+        vid.className = 'card-media';
+        vid.src = item.src;
+        vid.autoplay = true;
+        vid.loop = true;
+        vid.muted = true;
+        vid.playsInline = true;
+        vid.setAttribute('playsinline', '');
+        vid.setAttribute('webkit-playsinline', '');
+        vid.setAttribute('disablepictureinpicture', '');
+        vid.play().catch(() => { });
+        body.appendChild(vid);
+      } else {
+        const img = document.createElement('img');
+        img.className = 'card-media';
+        img.src = item.src;
+        img.alt = item.title;
+        img.loading = 'lazy';
+        body.appendChild(img);
+      }
+
+      // Caption
+      const caption = document.createElement('div');
+      caption.className = 'freak-caption';
+      caption.textContent = item.caption;
+      body.appendChild(caption);
+
+      // Sticker Badge
+      const badge = document.createElement('div');
+      badge.className = 'sticker-badge';
+      badge.textContent = item.badge;
+      card.appendChild(badge);
+
+      card.appendChild(body);
+
+      // Window controls interactivity
+      const minBtn = titlebar.querySelector('.win-min');
+      const maxBtn = titlebar.querySelector('.win-max');
+      const closeBtn = titlebar.querySelector('.win-close');
+
+      minBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        playSound('boing');
+        card.style.transform = `scale(0.3) rotate(${rot}deg)`;
+        setTimeout(() => { card.style.transform = `rotate(${rot}deg)`; }, 800);
+      });
+
+      maxBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        openModal(item);
+      });
+
+      closeBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        playSound('laser');
+        spawnPopText(e.clientX, e.clientY, 'НЕЛЬЗЯ ЗАКРЫТЬ! 😈');
+        // Duplicate or bounce!
+        card.style.transform = `scale(1.3) rotate(360deg)`;
+        setTimeout(() => { card.style.transform = `rotate(${rot}deg)`; }, 400);
+      });
+
+      // Draggable Logic
+      setupDrag(card);
+
+      // Click card effect
+      card.addEventListener('click', (e) => {
+        if (card.dataset.dragged === 'true') return;
+        playSound('boing');
+        card.style.zIndex = ++highestZIndex;
+        spawnPopText(e.clientX, e.clientY, ['ЙООООООООООООООООООООООООУ 💖', 'СТАРЫЙ БОГ ЗДЕСЬ💥', 'ИВАН ЗОЛО🤪', 'ХОЛИ АРЛЕ РЕФЕРЕНС 🔥', 'я жру гвна', 'ИРА АОГШЩРПЫШАГЫС 💅'][Math.floor(Math.random() * 6)]);
+        spawnSparkles(e.clientX, e.clientY, 8);
+      });
+
+      // Double click to inspect
+      card.addEventListener('dblclick', () => {
+        openModal(item);
+      });
+
+      return card;
+    }
+
+    // --- DRAG AND DROP ENGINE ---
+    function setupDrag(elem) {
+      let isDragging = false;
+      let startX = 0, startY = 0;
+      let initialLeft = 0, initialTop = 0;
+      let moved = false;
+
+      elem.addEventListener('pointerdown', (e) => {
+        // Ignore if clicking a button inside
+        if (e.target.closest('.win-btn')) return;
+
+        isDragging = true;
+        moved = false;
+        elem.dataset.dragged = 'false';
+        elem.setPointerCapture(e.pointerId);
+        elem.classList.add('dragging');
+        elem.style.zIndex = ++highestZIndex;
+
+        startX = e.clientX;
+        startY = e.clientY;
+        initialLeft = elem.offsetLeft;
+        initialTop = elem.offsetTop;
+
+        playSound('boing');
+      });
+
+      elem.addEventListener('pointermove', (e) => {
+        if (!isDragging) return;
+        const dx = e.clientX - startX;
+        const dy = e.clientY - startY;
+
+        if (Math.abs(dx) > 3 || Math.abs(dy) > 3) {
+          moved = true;
+          elem.dataset.dragged = 'true';
+        }
+
+        elem.style.left = `${initialLeft + dx}px`;
+        elem.style.top = `${initialTop + dy}px`;
+
+        // Slight tilt while dragging
+        const tilt = Math.max(-30, Math.min(30, dx * 0.4));
+        elem.style.transform = `rotate(${tilt}deg) scale(1.06)`;
+      });
+
+      const stopDrag = (e) => {
+        if (!isDragging) return;
+        isDragging = false;
+        elem.classList.remove('dragging');
+        const rot = elem.style.getPropertyValue('--rot') || '0deg';
+        elem.style.transform = `rotate(${rot})`;
+
+        if (moved) {
+          setTimeout(() => { elem.dataset.dragged = 'false'; }, 50);
+        }
+      };
+
+      elem.addEventListener('pointerup', stopDrag);
+      elem.addEventListener('pointercancel', stopDrag);
+    }
+
+    // --- SCATTER ALGORITHM ---
+    function scatterCards() {
+      const cards = document.querySelectorAll('.freak-card');
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+
+      // Safe boundaries away from the top/bottom marquees
+      const minX = 20;
+      const maxX = Math.max(minX + 50, w - 300);
+      const minY = 60;
+      const maxY = Math.max(minY + 50, h - 340);
+
+      cards.forEach((card, index) => {
+        // Spread evenly in quadrants or random clusters
+        const x = Math.floor(Math.random() * (maxX - minX) + minX);
+        const y = Math.floor(Math.random() * (maxY - minY) + minY);
+
+        // Random rotation from -35 to +35 degrees
+        const rot = (Math.random() * 70 - 35).toFixed(1);
+
+        card.style.left = `${x}px`;
+        card.style.top = `${y}px`;
+        card.style.setProperty('--rot', `${rot}deg`);
+        card.style.transform = `rotate(${rot}deg)`;
+        card.style.zIndex = highestZIndex++;
+      });
+
+      triggerScreenShake();
+      playSound('bass');
+    }
+
+    // --- POP TEXT EFFECT ---
+    function spawnPopText(x, y, text) {
+      const el = document.createElement('div');
+      el.className = 'pop-text';
+      el.textContent = text;
+      el.style.left = `${x}px`;
+      el.style.top = `${y}px`;
+      const rot = (Math.random() * 40 - 20).toFixed(0);
+      el.style.setProperty('--rot', `${rot}deg`);
+      document.body.appendChild(el);
+      setTimeout(() => el.remove(), 1200);
+    }
+
+    // --- CONFETTI & PARTICLES ---
+    const EMOJIS = ['🎉', '👑', '💖', '💅', '🤪', '💥', '✨', '🎂', '🥳', '🔥', '💀', '👄', '⭐'];
+
+    function spawnSparkles(x, y, count = 12) {
+      for (let i = 0; i < count; i++) {
+        const p = document.createElement('div');
+        p.className = 'particle';
+        p.textContent = EMOJIS[Math.floor(Math.random() * EMOJIS.length)];
+        p.style.left = `${x}px`;
+        p.style.top = `${y}px`;
+
+        const angle = Math.random() * Math.PI * 2;
+        const dist = Math.random() * 180 + 50;
+        const tx = Math.cos(angle) * dist;
+        const ty = Math.sin(angle) * dist;
+        const trot = Math.floor(Math.random() * 720 - 360);
+
+        p.style.setProperty('--tx', `${tx}px`);
+        p.style.setProperty('--ty', `${ty}px`);
+        p.style.setProperty('--trot', `${trot}deg`);
+
+        document.body.appendChild(p);
+        setTimeout(() => p.remove(), 2000);
+      }
+    }
+
+    function triggerScreenShake() {
+      document.body.classList.add('screen-shake');
+      setTimeout(() => document.body.classList.remove('screen-shake'), 400);
+    }
+
+    // --- MODAL ZOOM ---
+    const modal = document.getElementById('freak-modal');
+    const modalBody = document.getElementById('modal-body');
+    const modalClose = document.getElementById('modal-close');
+
+    function openModal(item) {
+      playSound('airhorn');
+      modalBody.innerHTML = '';
+
+      if (item.type === 'video') {
+        const vid = document.createElement('video');
+        vid.src = item.src;
+        vid.autoplay = true;
+        vid.loop = true;
+        vid.controls = true;
+        vid.playsInline = true;
+        modalBody.appendChild(vid);
+      } else {
+        const img = document.createElement('img');
+        img.src = item.src;
+        modalBody.appendChild(img);
+      }
+
+      modal.classList.add('open');
+      spawnSparkles(window.innerWidth / 2, window.innerHeight / 2, 30);
+    }
+
+    modalClose.addEventListener('click', () => {
+      modal.classList.remove('open');
+      modalBody.innerHTML = '';
+      playSound('boing');
+    });
+
+    modal.addEventListener('click', (e) => {
+      if (e.target === modal) {
+        modal.classList.remove('open');
+        modalBody.innerHTML = '';
+      }
+    });
+
+    // --- CONTROLS LISTENERS ---
+    document.getElementById('btn-shuffle').addEventListener('click', () => {
+      scatterCards();
+      spawnSparkles(window.innerWidth / 2, window.innerHeight / 2, 25);
+    });
+
+    document.getElementById('btn-turbo').addEventListener('click', (e) => {
+      turboMode = !turboMode;
+      e.currentTarget.classList.toggle('active', turboMode);
+      document.querySelectorAll('.freak-card').forEach(c => {
+        c.classList.toggle('turbo-spin', turboMode);
+      });
+      playSound(turboMode ? 'laser' : 'bass');
+      if (turboMode) {
+        spawnPopText(window.innerWidth / 2, window.innerHeight / 2, '🌪️ ТУРБО ВЕРТОЛЁТ 🌪️');
+      }
+    });
+
+    document.getElementById('btn-explode').addEventListener('click', (e) => {
+      playSound('airhorn');
+      triggerScreenShake();
+      for (let i = 0; i < 5; i++) {
+        setTimeout(() => {
+          spawnSparkles(
+            Math.random() * window.innerWidth,
+            Math.random() * window.innerHeight,
+            20
+          );
+        }, i * 150);
+      }
+      spawnPopText(window.innerWidth / 2, window.innerHeight / 2 - 50, '💥 БУУУУУМ! С ДР ИРА! 👑');
+    });
+
+    document.getElementById('btn-audio').addEventListener('click', () => {
+      toggleFreakMusic();
+    });
+
+    document.getElementById('btn-duplicate').addEventListener('click', () => {
+      const randomItem = mediaItems[Math.floor(Math.random() * mediaItems.length)];
+      const newCard = createCard(randomItem, chaosStage.children.length);
+      chaosStage.appendChild(newCard);
+
+      const w = window.innerWidth;
+      const h = window.innerHeight;
+      const x = Math.floor(Math.random() * (w - 280) + 40);
+      const y = Math.floor(Math.random() * (h - 320) + 60);
+      const rot = (Math.random() * 60 - 30).toFixed(1);
+
+      newCard.style.left = `${x}px`;
+      newCard.style.top = `${y}px`;
+      newCard.style.setProperty('--rot', `${rot}deg`);
+      newCard.style.transform = `scale(0) rotate(${rot}deg)`;
+      setTimeout(() => { newCard.style.transform = `scale(1) rotate(${rot}deg)`; }, 20);
+
+      playSound('boing');
+      spawnPopText(x + 100, y + 100, '🤡ПЕНСИЛВАЙЗ!!');
+    });
+
+    // Click on background = spawn funny text & sound
+    window.addEventListener('click', (e) => {
+      if (e.target.id === 'bg-canvas' || e.target === chaosStage || e.target.classList.contains('scanlines')) {
+        playSound('boing');
+        spawnSparkles(e.clientX, e.clientY, 10);
+        spawnPopText(e.clientX, e.clientY, ['СПАСТИ 10 ДЕТЕЙ ИЛИИИИИИИИИИИИИ?', 'черные дети спят', 'АВУВАВАВУ', '67', '1000-7'][Math.floor(Math.random() * 5)]);
+      }
+    });
+
+    // Custom cursor follower
+    const cursor = document.getElementById('cursor-follower');
+    window.addEventListener('pointermove', (e) => {
+      cursor.style.left = `${e.clientX}px`;
+      cursor.style.top = `${e.clientY}px`;
+
+      // Sparkle trail occasionally
+      if (Math.random() < 0.08) {
+        const star = document.createElement('div');
+        star.style.position = 'fixed';
+        star.style.left = `${e.clientX}px`;
+        star.style.top = `${e.clientY}px`;
+        star.style.pointerEvents = 'none';
+        star.style.zIndex = '9998';
+        star.style.fontSize = '14px';
+        star.textContent = ['✨', '💖', '⚡', '💅'][Math.floor(Math.random() * 4)];
+        star.style.animation = 'fall-fade 0.8s forwards ease-out';
+        star.style.setProperty('--tx', `${(Math.random() * 40 - 20)}px`);
+        star.style.setProperty('--ty', `${(Math.random() * 40 + 10)}px`);
+        star.style.setProperty('--trot', '45deg');
+        document.body.appendChild(star);
+        setTimeout(() => star.remove(), 800);
+      }
+    });
+
+    // --- TRIPPY MATRIX / STARFIELD / VORTEX CANVAS BACKGROUND ---
+    const canvas = document.getElementById('bg-canvas');
+    const ctx = canvas.getContext('2d');
+
+    function resizeCanvas() {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resizeCanvas);
+    resizeCanvas();
+
+    const stars = Array.from({ length: 90 }, () => ({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      radius: Math.random() * 2 + 0.5,
+      speedX: (Math.random() - 0.5) * 1.5,
+      speedY: (Math.random() - 0.5) * 1.5,
+      color: ['#ff007f', '#00f0ff', '#39ff14', '#ffff00', '#ffffff'][Math.floor(Math.random() * 5)]
+    }));
+
+    let gridOffset = 0;
+    function drawBackground() {
+      ctx.fillStyle = 'rgba(10, 5, 24, 0.35)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Trippy perspective neon grid at bottom
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255, 0, 127, 0.15)';
+      ctx.lineWidth = 1;
+      gridOffset = (gridOffset + 1) % 40;
+
+      const horizon = canvas.height * 0.45;
+      for (let x = 0; x < canvas.width; x += 60) {
+        ctx.beginPath();
+        ctx.moveTo(x, canvas.height);
+        ctx.lineTo(canvas.width / 2 + (x - canvas.width / 2) * 0.1, horizon);
+        ctx.stroke();
+      }
+      for (let y = canvas.height; y > horizon; y -= 25) {
+        const yy = y + (gridOffset * 0.4);
+        if (yy < canvas.height && yy > horizon) {
+          ctx.beginPath();
+          ctx.moveTo(0, yy);
+          ctx.lineTo(canvas.width, yy);
+          ctx.stroke();
+        }
+      }
+      ctx.restore();
+
+      // Floating Stars / Orbs
+      stars.forEach(s => {
+        s.x += s.speedX * (turboMode ? 4 : 1);
+        s.y += s.speedY * (turboMode ? 4 : 1);
+
+        if (s.x < 0) s.x = canvas.width;
+        if (s.x > canvas.width) s.x = 0;
+        if (s.y < 0) s.y = canvas.height;
+        if (s.y > canvas.height) s.y = 0;
+
+        ctx.fillStyle = s.color;
+        ctx.shadowColor = s.color;
+        ctx.shadowBlur = 10;
+        ctx.beginPath();
+        ctx.arc(s.x, s.y, s.radius, 0, Math.PI * 2);
+        ctx.fill();
+      });
+
+      requestAnimationFrame(drawBackground);
+    }
+    drawBackground();
+
+    // --- INITIALIZATION ---
+    function init() {
+      // Build cards
+      mediaItems.forEach((item, index) => {
+        const card = createCard(item, index);
+        chaosStage.appendChild(card);
+      });
+
+      // Scatter across the canvas randomly
+      scatterCards();
+
+      // Auto play celebration popup after 1s
+      setTimeout(() => {
+        spawnSparkles(window.innerWidth / 2, window.innerHeight / 2, 40);
+        spawnPopText(window.innerWidth / 2, window.innerHeight / 2 - 30, '🎉 С ДР ИРА! 👑');
+      }, 700);
+    }
+
+    init();
+  </script>
+</body>
+
+</html>
